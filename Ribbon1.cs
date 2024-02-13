@@ -1,10 +1,12 @@
 ﻿using Gone_Phishing.Properties;
 using Microsoft.Office.Core;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,32 +15,12 @@ using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 
-// TODO:  Follow these steps to enable the Ribbon (XML) item:
-
-// 1: Copy the following code block into the ThisAddin, ThisWorkbook, or ThisDocument class.
-
-//  protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
-//  {
-//      return new Ribbon1();
-//  }
-
-// 2. Create callback methods in the "Ribbon Callbacks" region of this class to handle user
-//    actions, such as clicking a button. Note: if you have exported this Ribbon from the Ribbon designer,
-//    move your code from the event handlers to the callback methods and modify the code to work with the
-//    Ribbon extensibility (RibbonX) programming model.
-
-// 3. Assign attributes to the control tags in the Ribbon XML file to identify the appropriate callback methods in your code.  
-
-// For more information, see the Ribbon XML documentation in the Visual Studio Tools for Office Help.
-
-
 namespace Gone_Phishing
 {
     [ComVisible(true)]
     public class Ribbon1 : Office.IRibbonExtensibility
     {
         private Office.IRibbonUI ribbon;
-
         public Ribbon1()
         {
         }
@@ -64,45 +46,48 @@ namespace Gone_Phishing
         {
             return Resources.image;
         }
+
         public void OnButtonClick(object sender)
         {
             ForwardSelectedEmail();
         }
 
-        /*
-        private void ForwardSelectedEmail()
+        public string ReadEmailAddressFromRegistry(string keyPath, string valueName)
         {
-            // MessageBox.Show($"Input text: Winna");
-            
-            Outlook.Explorer explorer = Globals.ThisAddIn.Application.ActiveExplorer();
-
-            if (explorer.Selection.Count > 0 && explorer.Selection[1] is Outlook.MailItem)
+            try
             {
-                Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
+                // Open the registry key with read access and RegistryView.Default
+                using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(keyPath))
+                {
+                    if (key != null)
+                    {
+                        // Read the value from the registry
+                        object value = key.GetValue(valueName);
 
-                // Create a new mail item for forwarding
-                Outlook.MailItem forwardMail = selectedMail.Forward();
 
-                // Set the recipient's email address
-                forwardMail.Recipients.Add("jay.truscott@outlook.com");
-
-                // Optionally, modify other properties of the forwarded email
-                // forwardMail.Subject = "Forwarded: " + selectedMail.Subject;
-
-                // Send the forwarded email
-                forwardMail.Send();
+                        // Check if the value is not null
+                        if (value != null)
+                        {
+                            return value.ToString();
+                        }
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Handle when no email is selected
-                System.Windows.Forms.MessageBox.Show("Please select an email to forward.", "No Email Selected", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                System.Windows.Forms.MessageBox.Show($"Error reading from registry: {ex.Message}");
             }
-            
+
+            return null;
         }
-        */
 
         public void ForwardSelectedEmail()
         {
+
+            string registryKeyPath = @"SOFTWARE\Unisys\Gone-Phishing";
+            string registryValueName = "ReportTo";
+            string emailAddress = ReadEmailAddressFromRegistry(registryKeyPath, registryValueName);
+
             Outlook.Explorer explorer = Globals.ThisAddIn.Application.ActiveExplorer();
 
             if (explorer.Selection.Count == 0)
@@ -111,17 +96,24 @@ namespace Gone_Phishing
             }
             else if (explorer.Selection.Count == 1 && explorer.Selection[1] is Outlook.MailItem)
             {
-                string address = "jay.truscott@outlook.com";
                 Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
 
-                DialogResult result = MessageBox.Show($"Do you want to formard '{selectedMail.Subject}' to {address}?", "Confirmation", MessageBoxButtons.OKCancel);
+                DialogResult result = MessageBox.Show($"Do you want to formard\n{selectedMail.Subject}\nto\n{emailAddress}?", "Confirmation", MessageBoxButtons.OKCancel);
 
                 if (result == DialogResult.OK)
                 {
-                    Outlook.MailItem forwardMail = selectedMail.Forward();
-                    forwardMail.Recipients.Add(address);
-                    forwardMail.Subject = "Reported with Gone Phishing - " + selectedMail.Subject;
-                    forwardMail.Send();
+                    try
+                    {
+                        Outlook.MailItem forwardMail = selectedMail.Forward();
+                        forwardMail.Recipients.Add(emailAddress);
+                        forwardMail.Subject = "Reported with Gone Phishing - " + selectedMail.Subject;
+                        forwardMail.Send();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.Forms.MessageBox.Show($"Error reading from registry: {ex.Message}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+
+                    }
                 }
             }
             else if (explorer.Selection.Count > 1)
