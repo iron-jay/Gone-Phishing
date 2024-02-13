@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
+using Outlook = Microsoft.Office.Interop.Outlook;
+
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -67,11 +69,12 @@ namespace Gone_Phishing
             ForwardSelectedEmail();
         }
 
+        /*
         private void ForwardSelectedEmail()
         {
-            MessageBox.Show($"Input text: Winna");
-            /*
-            Outlook.Explorer explorer = this.Application.ActiveExplorer();
+            // MessageBox.Show($"Input text: Winna");
+            
+            Outlook.Explorer explorer = Globals.ThisAddIn.Application.ActiveExplorer();
 
             if (explorer.Selection.Count > 0 && explorer.Selection[1] is Outlook.MailItem)
             {
@@ -94,7 +97,38 @@ namespace Gone_Phishing
                 // Handle when no email is selected
                 System.Windows.Forms.MessageBox.Show("Please select an email to forward.", "No Email Selected", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
             }
-            */
+            
+        }
+        */
+
+        public void ForwardSelectedEmail()
+        {
+            Outlook.Explorer explorer = Globals.ThisAddIn.Application.ActiveExplorer();
+
+            if (explorer.Selection.Count == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("Please select an email to forward.", "No Email Selected", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+            }
+            else if (explorer.Selection.Count == 1 && explorer.Selection[1] is Outlook.MailItem)
+            {
+                string address = "jay.truscott@outlook.com";
+                Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
+
+                DialogResult result = MessageBox.Show($"Do you want to formard '{selectedMail.Subject}' to {address}?", "Confirmation", MessageBoxButtons.OKCancel);
+
+                if (result == DialogResult.OK)
+                {
+                    Outlook.MailItem forwardMail = selectedMail.Forward();
+                    forwardMail.Recipients.Add(address);
+                    forwardMail.Subject = "Reported with Gone Phishing - " + selectedMail.Subject;
+                    forwardMail.Send();
+                }
+            }
+            else if (explorer.Selection.Count > 1)
+            {
+                System.Windows.Forms.MessageBox.Show("Please only forward one email", "Too Many Emails Selected", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+            }
+
         }
 
         #endregion
