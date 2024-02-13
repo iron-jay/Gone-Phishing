@@ -84,7 +84,7 @@ namespace Gone_Phishing
         public void ForwardSelectedEmail()
         {
 
-            string registryKeyPath = @"SOFTWARE\Unisys\Gone-Phishing";
+            string registryKeyPath = @"SOFTWARE\Unisys\GonePhishing";
             string registryValueName = "ReportTo";
             string emailAddress = ReadEmailAddressFromRegistry(registryKeyPath, registryValueName);
 
@@ -97,9 +97,8 @@ namespace Gone_Phishing
             else if (explorer.Selection.Count == 1 && explorer.Selection[1] is Outlook.MailItem)
             {
                 Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
-
-                DialogResult result = MessageBox.Show($"Do you want to forward\n{selectedMail.Subject}\nto\n{emailAddress}?", "Confirmation", MessageBoxButtons.OKCancel);
-
+                DialogResult result = MessageBox.Show($"Do you want to forward\n{selectedMail.Subject}\nto\n{emailAddress}\nand move to junk?", "Confirmation", MessageBoxButtons.OKCancel);
+                
                 if (result == DialogResult.OK)
                 {
                     try
@@ -108,13 +107,18 @@ namespace Gone_Phishing
                         forwardMail.Recipients.Add(emailAddress);
                         forwardMail.Subject = "Reported with Gone Phishing - " + selectedMail.Subject;
                         forwardMail.Send();
+
+                        Outlook.MAPIFolder junkFolder = explorer.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk);
+                        selectedMail.Move(junkFolder);
+
                     }
                     catch (Exception ex)
                     {
-                        System.Windows.Forms.MessageBox.Show($"Error reading from registry: {ex.Message}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show($"{ex.Message}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
 
                     }
                 }
+                
             }
             else if (explorer.Selection.Count > 1)
             {
