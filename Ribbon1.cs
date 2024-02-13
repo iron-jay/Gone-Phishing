@@ -98,7 +98,7 @@ namespace Gone_Phishing
             {
                 Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
 
-                DialogResult result = MessageBox.Show($"Do you want to formard\n{selectedMail.Subject}\nto\n{emailAddress}?", "Confirmation", MessageBoxButtons.OKCancel);
+                DialogResult result = MessageBox.Show($"Do you want to forward\n{selectedMail.Subject}\nto\n{emailAddress}?", "Confirmation", MessageBoxButtons.OKCancel);
 
                 if (result == DialogResult.OK)
                 {
