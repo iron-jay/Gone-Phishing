@@ -84,7 +84,7 @@ namespace Gone_Phishing
         public void ForwardSelectedEmail()
         {
 
-            string registryKeyPath = @"SOFTWARE\Unisys\GonePhishing";
+            string registryKeyPath = @"Software\Microsoft\Office\Outlook\Addins\Unisys.GonePhishing";
             string registryValueName = "ReportTo";
             string emailAddress = ReadEmailAddressFromRegistry(registryKeyPath, registryValueName);
 
