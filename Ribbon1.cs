@@ -52,7 +52,7 @@ namespace Gone_Phishing
             ForwardSelectedEmail();
         }
 
-        public string ReadEmailAddressFromRegistry(string keyPath, string valueName)
+        public string ReadFromRegistry(string keyPath, string valueName)
         {
             try
             {
@@ -84,9 +84,9 @@ namespace Gone_Phishing
         public void ForwardSelectedEmail()
         {
 
-            string registryKeyPath = @"Software\Microsoft\Office\Outlook\Addins\Unisys.GonePhishing";
-            string registryValueName = "ReportTo";
-            string emailAddress = ReadEmailAddressFromRegistry(registryKeyPath, registryValueName);
+            string registryKeyPath = @"Software\Unisys\GonePhishing";
+            string emailAddress = ReadFromRegistry(registryKeyPath, "ReportTo");
+            string prefix = ReadFromRegistry(registryKeyPath, "Prefix");
 
             Outlook.Explorer explorer = Globals.ThisAddIn.Application.ActiveExplorer();
 
@@ -105,7 +105,7 @@ namespace Gone_Phishing
                     {
                         Outlook.MailItem forwardMail = selectedMail.Forward();
                         forwardMail.Recipients.Add(emailAddress);
-                        forwardMail.Subject = "Reported with Gone Phishing - " + selectedMail.Subject;
+                        forwardMail.Subject = prefix + selectedMail.Subject;
                         forwardMail.Send();
 
                         Outlook.MAPIFolder junkFolder = explorer.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk);
