@@ -44,7 +44,7 @@ namespace Gone_Phishing
 
         public Bitmap ButtonImage(IRibbonControl control)
         {
-            return Resources.image2;
+            return Resources._80_removebg_preview_1_;
         }
 
         public void OnButtonClick(object sender)
