@@ -3,7 +3,7 @@
 	<ribbon>
 		<tabs>
 			<tab idMso="TabMail">
-				<group id="SPAM" label="SPAM">
+				<group id="SPAM">
 					<button id="Phishing" label="Gone Phishing" getImage="ButtonImage" size="large" onAction="OnButtonClick" />
 				</group>
 			</tab>
