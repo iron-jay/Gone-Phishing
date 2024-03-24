@@ -44,7 +44,7 @@ namespace Gone_Phishing
 
         public Bitmap ButtonImage(IRibbonControl control)
         {
-            return Resources.image;
+            return Resources.image2;
         }
 
         public void OnButtonClick(object sender)
@@ -104,7 +104,7 @@ namespace Gone_Phishing
             else if (explorer.Selection.Count == 1 && explorer.Selection[1] is Outlook.MailItem)
             {
                 Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
-                DialogResult result = MessageBox.Show($"Do you want to forward\n{selectedMail.Subject}\nto\n{emailAddress}\nand move to junk?", "Confirmation", MessageBoxButtons.OKCancel);
+                DialogResult result = MessageBox.Show($"Do you want to forward\n{selectedMail.Subject}\nto {emailAddress}\nand move to junk?", "Confirmation", MessageBoxButtons.OKCancel);
                 
                 if (result == DialogResult.OK)
                 {

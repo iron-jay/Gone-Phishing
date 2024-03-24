@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gone Phishing", "Gone Phishing.csproj", "{D3176983-83DA-431C-8FAC-FF3F774E3396}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GP_Setup", "..\GP_Setup\GP_Setup.vdproj", "{0B255FA1-2997-49A7-ABBA-5CD320F661E0}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GP_Setup_x86", "..\GP_Setup_x86\GP_Setup_x86.vdproj", "{8FE9F944-B88B-4579-A8AB-8D6BA425533A}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GP_Setup_x64", "..\GP_Setup_x64\GP_Setup.vdproj", "{A2D25F9C-61CF-4678-8060-0FAD8161A631}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +19,12 @@ Global
 		{D3176983-83DA-431C-8FAC-FF3F774E3396}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3176983-83DA-431C-8FAC-FF3F774E3396}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3176983-83DA-431C-8FAC-FF3F774E3396}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B255FA1-2997-49A7-ABBA-5CD320F661E0}.Debug|Any CPU.ActiveCfg = Debug
-		{0B255FA1-2997-49A7-ABBA-5CD320F661E0}.Release|Any CPU.ActiveCfg = Release
+		{8FE9F944-B88B-4579-A8AB-8D6BA425533A}.Debug|Any CPU.ActiveCfg = Debug
+		{8FE9F944-B88B-4579-A8AB-8D6BA425533A}.Release|Any CPU.ActiveCfg = Release
+		{A2D25F9C-61CF-4678-8060-0FAD8161A631}.Debug|Any CPU.ActiveCfg = Debug
+		{A2D25F9C-61CF-4678-8060-0FAD8161A631}.Debug|Any CPU.Build.0 = Debug
+		{A2D25F9C-61CF-4678-8060-0FAD8161A631}.Release|Any CPU.ActiveCfg = Release
+		{A2D25F9C-61CF-4678-8060-0FAD8161A631}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

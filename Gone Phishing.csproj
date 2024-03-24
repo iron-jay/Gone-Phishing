@@ -174,7 +174,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Gone Phishing_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -200,11 +199,7 @@
     <EmbeddedResource Include="Ribbon1.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="favicon.ico" />
-    <None Include="Resources\bmp.jpg" />
+    <None Include="Resources\image2.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -220,7 +215,8 @@
     <ManifestCertificateThumbprint>373F68BD38459C9F591B77432625E615E5441CD8</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
