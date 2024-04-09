@@ -104,9 +104,9 @@ namespace Gone_Phishing
             else if (explorer.Selection.Count == 1 && explorer.Selection[1] is Outlook.MailItem)
             {
                 Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
-                DialogResult result = MessageBox.Show($"Do you want to forward\n{selectedMail.Subject}\nto {emailAddress}\nand move to junk?", "Confirmation", MessageBoxButtons.OKCancel);
+                DialogResult result = MessageBox.Show($"Do you want to forward the email:\n'{selectedMail.Subject}'\nto test@example.com and move to it junk?", "Gone Phishing", MessageBoxButtons.YesNo);
                 
-                if (result == DialogResult.OK)
+                if (result == DialogResult.Yes)
                 {
                     try
                     {
