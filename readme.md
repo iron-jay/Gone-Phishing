@@ -28,7 +28,7 @@ HKLM:\Software\WOW6432Node\Microsoft\Office\Outlook\Addins\GonePhishing
 for 32-bit.
 
 ## Caveats
-The only caveats is that the email will send from the primary one set in Outlook. So if you had additional mailboxes added (like a delegate or group mailbox), and you reports a suspsicous email, it will appear in __your__ sent items, not the mailbox it may have come into
+The only caveats is that the email will send from the primary one set in Outlook. So if you had additional mailboxes added (like a delegate or group mailbox), and you reports a suspsicous email, it will appear in _your_ sent items, not the mailbox it may have come into
 
 
 Like anything, make sure you test properly before doing a larger rollout.
