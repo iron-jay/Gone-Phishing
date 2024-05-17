@@ -86,11 +86,11 @@ namespace Gone_Phishing
             string registryKeyPath = null;
             if (File.Exists(@"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"))
             {
-               registryKeyPath = @"Software\Microsoft\Office\Outlook\Addins\Unisys.GonePhishing";
+               registryKeyPath = @"Software\Microsoft\Office\Outlook\Addins\GonePhishing";
             }
             else if (File.Exists(@"C:\Program Files (x86)\Microsoft Office\Office16\OUTLOOK.EXE"))
             {
-                registryKeyPath = @"Software\WOW6432Node\Microsoft\Office\Outlook\Addins\Unisys.GonePhishing";
+                registryKeyPath = @"Software\WOW6432Node\Microsoft\Office\Outlook\Addins\GonePhishing";
             }
             string emailAddress = ReadFromRegistry(registryKeyPath, "ReportTo");
             string prefix = ReadFromRegistry(registryKeyPath, "Prefix");
@@ -104,7 +104,7 @@ namespace Gone_Phishing
             else if (explorer.Selection.Count == 1 && explorer.Selection[1] is Outlook.MailItem)
             {
                 Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
-                DialogResult result = MessageBox.Show($"Do you want to forward the email:\n'{selectedMail.Subject}'\nto test@example.com and move to it junk?", "Gone Phishing", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBox.Show($"Do you want to forward the email:\n'{selectedMail.Subject}'\nto {emailAddress} and move to it junk?", "Gone Phishing", MessageBoxButtons.YesNo);
                 
                 if (result == DialogResult.Yes)
                 {

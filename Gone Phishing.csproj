@@ -207,6 +207,13 @@
   <ItemGroup>
     <None Include="Resources\80-removebg-preview%281%29.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\forward1.png" />
+    <Content Include="images\forward2.png" />
+    <Content Include="images\reg.png" />
+    <Content Include="images\ribbon.png" />
+    <Content Include="images\sent1.png" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
