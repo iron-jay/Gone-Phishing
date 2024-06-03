@@ -2,18 +2,13 @@
 using Microsoft.Office.Core;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net.Mail;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
-
 
 namespace Gone_Phishing
 {
@@ -21,9 +16,8 @@ namespace Gone_Phishing
     public class Ribbon1 : Office.IRibbonExtensibility
     {
         private Office.IRibbonUI ribbon;
-        public Ribbon1()
-        {
-        }
+
+        public Ribbon1() { }
 
         #region IRibbonExtensibility Members
 
@@ -35,7 +29,6 @@ namespace Gone_Phishing
         #endregion
 
         #region Ribbon Callbacks
-        //Create callback methods here. For more information about adding callback methods, visit https://go.microsoft.com/fwlink/?LinkID=271226
 
         public void Ribbon_Load(Office.IRibbonUI ribbonUI)
         {
@@ -56,16 +49,11 @@ namespace Gone_Phishing
         {
             try
             {
-                // Open the registry key with read access and RegistryView.Default
                 using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(keyPath))
                 {
                     if (key != null)
                     {
-                        // Read the value from the registry
                         object value = key.GetValue(valueName);
-
-
-                        // Check if the value is not null
                         if (value != null)
                         {
                             return value.ToString();
@@ -81,20 +69,45 @@ namespace Gone_Phishing
             return null;
         }
 
-        public void ForwardSelectedEmail()
+        public string SendTo()
         {
             string registryKeyPath = null;
             if (File.Exists(@"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"))
             {
-               registryKeyPath = @"Software\Microsoft\Office\Outlook\Addins\GonePhishing";
+                registryKeyPath = @"Software\Microsoft\Office\Outlook\Addins\GonePhishing";
             }
             else if (File.Exists(@"C:\Program Files (x86)\Microsoft Office\Office16\OUTLOOK.EXE"))
             {
                 registryKeyPath = @"Software\WOW6432Node\Microsoft\Office\Outlook\Addins\GonePhishing";
             }
-            string emailAddress = ReadFromRegistry(registryKeyPath, "ReportTo");
-            string prefix = ReadFromRegistry(registryKeyPath, "Prefix");
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Outlook is installed in a weird path, and this probably won't work.", "Incorrect", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+            }
+            return ReadFromRegistry(registryKeyPath, "ReportTo");
+        }
 
+        public string Prefix()
+        {
+            string registryKeyPath = null;
+            if (File.Exists(@"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"))
+            {
+                registryKeyPath = @"Software\Microsoft\Office\Outlook\Addins\GonePhishing";
+            }
+            else if (File.Exists(@"C:\Program Files (x86)\Microsoft Office\Office16\OUTLOOK.EXE"))
+            {
+                registryKeyPath = @"Software\WOW6432Node\Microsoft\Office\Outlook\Addins\GonePhishing";
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Outlook is installed in a weird path, and this probably won't work.", "Incorrect", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+
+            }
+            return ReadFromRegistry(registryKeyPath, "Prefix");
+        }
+
+        public void ForwardSelectedEmail()
+        {
             Outlook.Explorer explorer = Globals.ThisAddIn.Application.ActiveExplorer();
 
             if (explorer.Selection.Count == 0)
@@ -104,34 +117,30 @@ namespace Gone_Phishing
             else if (explorer.Selection.Count == 1 && explorer.Selection[1] is Outlook.MailItem)
             {
                 Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
-                DialogResult result = MessageBox.Show($"Do you want to forward the email:\n'{selectedMail.Subject}'\nto {emailAddress} and move to it junk?", "Gone Phishing", MessageBoxButtons.YesNo);
-                
+                DialogResult result = MessageBox.Show($"Do you want to forward the email:\n'{selectedMail.Subject}'\nto {SendTo()} and move to it junk?", "Gone Phishing", MessageBoxButtons.YesNo);
+
                 if (result == DialogResult.Yes)
                 {
                     try
                     {
                         Outlook.MailItem forwardMail = selectedMail.Forward();
-                        forwardMail.Recipients.Add(emailAddress);
-                        forwardMail.Subject = prefix + selectedMail.Subject;
+                        forwardMail.Recipients.Add(SendTo());
+                        forwardMail.Subject = Prefix() + selectedMail.Subject;
                         forwardMail.Send();
 
                         Outlook.MAPIFolder junkFolder = explorer.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk);
                         selectedMail.Move(junkFolder);
-
                     }
                     catch (Exception ex)
                     {
                         System.Windows.Forms.MessageBox.Show($"{ex.Message}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-
                     }
                 }
-                
             }
             else if (explorer.Selection.Count > 1)
             {
                 System.Windows.Forms.MessageBox.Show("Please only forward one email", "Too Many Emails Selected", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
             }
-
         }
 
         #endregion
