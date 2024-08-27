@@ -35,12 +35,12 @@ namespace Gone_Phishing
             this.ribbon = ribbonUI;
         }
 
-        public Bitmap ButtonImage(IRibbonControl control)
+        public Bitmap ButtonImage_Phish(IRibbonControl control)
         {
-            return Resources._80_removebg_preview_1_;
+            return Resources.phish;
         }
 
-        public void OnButtonClick(object sender)
+        public void OnButtonClick_Phish(object sender)
         {
             ForwardSelectedEmail();
         }
@@ -117,19 +117,26 @@ namespace Gone_Phishing
             else if (explorer.Selection.Count == 1 && explorer.Selection[1] is Outlook.MailItem)
             {
                 Outlook.MailItem selectedMail = explorer.Selection[1] as Outlook.MailItem;
-                DialogResult result = MessageBox.Show($"Do you want to forward the email:\n'{selectedMail.Subject}'\nto {SendTo()} and move to it junk?", "Gone Phishing", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBox.Show($"Do you want to forward the email:\n'{selectedMail.Subject}'\nto {SendTo()} and move to it deleted items?", "Gone Phishing", MessageBoxButtons.YesNo);
 
                 if (result == DialogResult.Yes)
                 {
                     try
                     {
-                        Outlook.MailItem forwardMail = selectedMail.Forward();
-                        forwardMail.Recipients.Add(SendTo());
-                        forwardMail.Subject = Prefix() + selectedMail.Subject;
-                        forwardMail.Send();
+                        Outlook.MailItem newMail = Globals.ThisAddIn.Application.CreateItem(Outlook.OlItemType.olMailItem) as Outlook.MailItem;
 
-                        Outlook.MAPIFolder junkFolder = explorer.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk);
-                        selectedMail.Move(junkFolder);
+                        newMail.Subject = Prefix() + selectedMail.Subject;
+                        newMail.To = SendTo();
+
+                        string tempFile = System.IO.Path.GetTempFileName();
+                        selectedMail.SaveAs(tempFile, Outlook.OlSaveAsType.olMSG);
+                        newMail.Attachments.Add(tempFile, Outlook.OlAttachmentType.olEmbeddeditem, 1, selectedMail.Subject);
+                        newMail.Send();
+
+                        System.IO.File.Delete(tempFile);
+                        Outlook.MAPIFolder deletedItems = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderDeletedItems);
+                        selectedMail.Move(deletedItems);
+
                     }
                     catch (Exception ex)
                     {
