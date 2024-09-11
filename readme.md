@@ -5,14 +5,14 @@
 This add-in for Outlook will add a new button to the main ribbon, and should be used as a simple solution for reporting SPAM and Phishing emails to an assigned address:<br>
 ![GP](images/ribbon.png)
 
-When clicked, it will ask if you want to forward the selected email, and move the item to junk:<br>
+When clicked, it will ask if you want to forward the selected email, and move the item to deleted item:<br>
 ![GP](images/forward1.png)<br>
 Hitting 'No' will stop all functions, hitting yes will make it happen.
 
 If you try and forward multiple emails by selecting more then one, it'll throw an error:<br>
 ![GP](images/forward2.png)
 
-After selecting 'Yes', the add-in will add a prefix to the email, and send it to the address. In sent items it will look like:<br>
+After selecting 'Yes', the add-in will create a new mail item, attach the sus email to it, and send it onto the address. In sent items it will look like:<br>
 ![GP](images/sent1.png)
 
 Both the address and prefix are saved as strings in the registry, so can be editing down the track with Group Policy as needed:<br>
