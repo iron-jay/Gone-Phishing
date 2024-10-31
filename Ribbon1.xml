@@ -3,11 +3,16 @@
 	<ribbon>
 		<tabs>
 			<tab idMso="TabMail">
-				<group id="SPAM" label="GP">
-					<button id="Phishing" label="Report Phishing" getImage="ButtonImage_Phish" size="large" onAction="OnButtonClick_Phish" />
+				<group id="SPAM" label="Report">
+					<button id="Phishing"
+                            label="Report Phishing"
+                            getImage="ButtonImage_Phish"
+                            size="large"
+                            onAction="OnButtonClick_Phish"
+                            screentip="Report Phishing Email"
+                            supertip="Forward selected email to report phishing attempts" />
 				</group>
 			</tab>
 		</tabs>
 	</ribbon>
 </customUI>
-
