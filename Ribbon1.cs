@@ -23,7 +23,13 @@ namespace Gone_Phishing
 
         public string GetCustomUI(string ribbonID)
         {
-            return GetResourceText("Gone_Phishing.Ribbon1.xml");
+            // Only return the custom UI for the main Outlook window
+            if (ribbonID == "Microsoft.Outlook.Explorer")
+            {
+                return GetResourceText("Gone_Phishing.Ribbon1.xml");
+            }
+            // Return empty string for email windows and other views
+            return string.Empty;
         }
 
         #endregion
@@ -35,14 +41,14 @@ namespace Gone_Phishing
             this.ribbon = ribbonUI;
         }
 
-        public Bitmap ButtonImage_Phish(IRibbonControl control)
-        {
-            return Resources.phish;
-        }
-
-        public void OnButtonClick_Phish(object sender)
+        public void OnButtonClick_Phish(Office.IRibbonControl control)
         {
             ForwardSelectedEmail();
+        }
+
+        public Bitmap ButtonImage_Phish(Office.IRibbonControl control)
+        {
+            return Resources.phish;
         }
 
         public string ReadFromRegistry(string keyPath, string valueName)
